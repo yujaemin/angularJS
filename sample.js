@@ -21,7 +21,7 @@
         '$cookies'
     ];
     /**
-     * @description  reusable functions
+     * @description 화면별 중복 함수 모음
      *
      * @author jm4341.yu
      * @param {any} ruleService
@@ -595,56 +595,6 @@
 
         // domain checker end
 
-<<<<<<< HEAD
-    commonFunctionService.getAffiliationOrgInfo = function(scope, userId) {
-        if (userId == undefined) {
-            scope.affilationAuthInfo = {"isViewAuth" : false, "isEditAuth" : false, "desc" : "auth failed", "alert" : "auth failed"};
-        }
-        
-        LinkAniService.linkAniOn();
-        employeeResource.get(userId).$promise.then(function(employee) {
-            LinkAniService.linkAniOff();            
-            scope.affilationAuthInfo = commonFunctionService.setAffilationOrgInfoDesc(POLICY_TYPE.USER_POLICY, employee.affilationOrgInfo, employee.fnlLoginBtTypeCode, employee.plcyId, employee.dispBtPlcyId);
-        });
-    };
-
-    /**
-        관리자의 소속과 비교하여 해당 계정의 소속과 라스트로그인소속에 맞는 문구를 생성한다.
-        type : 사용자 정책인지, 로그인 원소속 정책인지, 로그인 파견소속 정책인지에 따라 다르다.
-        affilationInfo : 원소속에 대한 정보는 필수값이며, 파견소속 정보는 없을 수 있음
-        lastLoginInfo : 원소속(O), 파견소속(S)
-        plcyId : 원소속 조직정책
-        dispBtPlcyId : 파견소속 조직정책
-
-        return
-            isViewAuth : 화면조회 권한
-            isEditAuth : 화면수정 권한
-            desc : 출력문구
-            alert : 수정시 경고문구 - 수정권한이 false인 경우만
-    */
-    commonFunctionService.setAffilationOrgInfoDesc = function(type, affilationInfo, lastLoginInfo, plcyId, dispBtPlcyId) {
-
-        // 원소속관리자
-        var originAuth = isOriginAdmin(affilationInfo);
-        // 파견소속 관리자
-        var dispAuth = isSubAdmin(affilationInfo);
-        // 상위 권한 관리자
-        var upperAuth = (originAuth && dispAuth) ? true : false;
-
-        // 사용자 예외 정책 탭
-        if(type === POLICY_TYPE.USER_POLICY) {
-            if(upperAuth === true) {
-                return {"isViewAuth" : true, "isEditAuth" : true, "desc" : ""};
-            }
-            if(originAuth === true) {
-                return {"isViewAuth" : true, "isEditAuth" : true, "desc" : ""};
-            }
-            if(dispAuth === true) {
-                return {"isViewAuth" : true, "isEditAuth" : false, "desc" : $translate.instant('policy.affiliation.originPrefix') + affilationInfo.O.compName + $translate.instant('policy.affiliation.commonPostfix') + $translate.instant('policy.affiliation.notAuthDescDisp'), "alert" : $translate.instant('policy.affiliation.notAuthDescDisp')};
-            }
-            return {"isViewAuth" : false, "isEditAuth" : false, "desc" : "auth failed", "alert" : "auth failed"};
-        }
-=======
         // 축약형 -> 일반형
         commonFunctionService.changeOrgTypeCodeFromAbbreviateTypeToNormalType = function(orgTypeCode) {
             if (orgTypeCode === null || orgTypeCode === undefined) {
@@ -664,7 +614,6 @@
                 return orgTypeCode;
             }
         };
->>>>>>> 8d3bfb4... [ADM][AU] 자바스크립트 코딩컨벤션
 
         // 일반형 -> 축약형
         commonFunctionService.changeOrgTypeCodeFromNormalTypeToAbbreviateType = function(orgTypeCode) {
@@ -682,19 +631,6 @@
             } else if (orgTypeCode === 'SUBORG') {
                 return 'SUBORG';
             } else {
-<<<<<<< HEAD
-                // 원소속과 파견소속의 회사가 같고
-                if(affilationInfo[POLICY_TYPE.ORIGIN].compCode === affilationInfo[POLICY_TYPE.SUB].compCode) {
-                    // 같은 조직 정책을 가짐
-                    if(plcyId === dispBtPlcyId) {
-                        return {"isViewAuth" : true, "isEditAuth" : true, "desc" : $translate.instant('policy.affiliation.samePolicy')};
-                    }
-                    // 다른 조직정책을 가짐
-                    if(plcyId !== dispBtPlcyId) {
-                        return {"isViewAuth" : true, "isEditAuth" : true, "desc" : ""};
-                    }
-                    return {"isViewAuth" : false, "isEditAuth" : false, "desc" : "auth failed", "alert" : "auth failed"};
-=======
                 return orgTypeCode;
             }
         };
@@ -742,7 +678,6 @@
             if (type === POLICY_TYPE.USER_POLICY) {
                 if (upperAuth === true) {
                     return {isViewAuth: true, isEditAuth: true, desc: ''};
->>>>>>> 8d3bfb4... [ADM][AU] 자바스크립트 코딩컨벤션
                 }
                 if (originAuth === true) {
                     return {isViewAuth: true, isEditAuth: true, desc: ''};
@@ -753,33 +688,6 @@
                 return {isViewAuth: false, isEditAuth: false, desc: 'auth failed', alert: 'auth failed'};
             }
 
-<<<<<<< HEAD
-        // 사용자 예외 발신통제 파견소속 탭
-        if(type === POLICY_TYPE.USER_LOGIN_BT_POLICY_SUB) {
-            // 파견소속이 없음
-            if(affilationInfo[POLICY_TYPE.SUB] === undefined) {
-                return {"isViewAuth" : false, "isEditAuth" : false, "desc" : $translate.instant('policy.affiliation.notExistDispPolicy')};
-            } else {
-                // 원소속과 파견소속의 회사가 같고
-                if(affilationInfo[POLICY_TYPE.ORIGIN].compCode === affilationInfo[POLICY_TYPE.SUB].compCode) {
-                    // 같은 조직 정책을 가짐
-                    if(plcyId === dispBtPlcyId) {
-                        return {"isViewAuth" : true, "isEditAuth" : true, "desc" : $translate.instant('policy.affiliation.samePolicy')};
-                    }
-                    // 다른 조직정책을 가짐
-                    if(plcyId !== dispBtPlcyId) {
-                        return {"isViewAuth" : true, "isEditAuth" : true, "desc" : ""};
-                    }
-                    return {"isViewAuth" : false, "isEditAuth" : false, "desc" : "auth failed", "alert" : "auth failed"};
-                }
-                // 해당 계정이 원소속 로그인 상태임
-                if(lastLoginInfo === POLICY_TYPE.ORIGIN) {
-                    if(upperAuth === true) {
-                        return {"isViewAuth" : true, "isEditAuth" : true, "desc" : $translate.instant('policy.affiliation.originPrefix') + affilationInfo.O.compName + $translate.instant('policy.affiliation.commonPostfix') + $translate.instant('policy.affiliation.originPolicy')};
-                    }
-                    if(originAuth === true) {
-                        return {"isViewAuth" : true, "isEditAuth" : false, "desc" : $translate.instant('policy.affiliation.originPrefix') + affilationInfo.O.compName + $translate.instant('policy.affiliation.commonPostfix') + $translate.instant('policy.affiliation.originPolicy'), "alert" : $translate.instant('policy.affiliation.notAuthDescOrigin')};
-=======
             // 사용자 예외 발신통제 원소속 탭
             if (type === POLICY_TYPE.USER_LOGIN_BT_POLICY_ORIGINAL) {
                 // 파견소속이 없음
@@ -851,7 +759,6 @@
                             };
                         }
                         return {isViewAuth: false, isEditAuth: false, desc: 'auth failed', alert: 'auth failed'};
->>>>>>> 8d3bfb4... [ADM][AU] 자바스크립트 코딩컨벤션
                     }
                     if (lastLoginInfo === POLICY_TYPE.SUB) {
                         if (upperAuth === true) {
@@ -1046,37 +953,8 @@
                 }
             }
 
-<<<<<<< HEAD
-    /**
-     * @description 입력된 문자열 비교
-     * 
-     * @param {any} arguments : 원본, 변경데이터, 원본, 변경데이터, ... 순으로 입력되어야 함 
-     * @returns boolean
-     */
-    commonFunctionService.isChangeInputDatas = function() {
-        var length = arguments.length;
-        // 원본과 비교대상의 합은 짝수여야함
-        if(!arguments || length%2==1) {
-            // 잘못된 값은 false
-            return false;
-        }
-
-        for(var idx=0; idx<length; idx+=2){
-            // 같지 않은게 하나라도 있으면
-            if(arguments[idx] !== arguments[idx+1]){
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    return commonFunctionService;
-}
-=======
             return false;
         };
->>>>>>> 8d3bfb4... [ADM][AU] 자바스크립트 코딩컨벤션
 
         return commonFunctionService;
     }
